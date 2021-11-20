@@ -1,5 +1,4 @@
 from pygame import *
-from random import randint
 
 window = display.set_mode((700, 500))
 display.set_caption('space')
@@ -11,11 +10,10 @@ FPS = 60
 numbah1 = 0
 numbah2 = 0
 
-keys_pressed = key.get_pressed()
 
 class GameSprite(sprite.Sprite):
-    def __init__(self, player_image, player_x, player_y, player_speed):
-        super().__init__()
+    def init(self, player_image, player_x, player_y, player_speed):
+        #super().init()
         self.image = transform.scale(image.load(player_image), (75, 75))
         self.rect = self.image.get_rect()
         self.rect.x = player_x
@@ -26,15 +24,32 @@ class GameSprite(sprite.Sprite):
         window.blit(self.image, (self.rect.x, self.rect.y))
 
 
-class Player(GameSprite):
+class Player(sprite.Sprite):
+    def init(self, height, width, x_cor, y_cor, color_1, color_2, color_3, speed):
+        #super().init()
+        self.color_1 = color_1
+        self.color_2 = color_2
+        self.color_3 = color_3
+        self.width = width
+        self.height = height
+        self.image = Surface((self.width, self.height))
+        self.image.fill((color_1, color_2, color_3))
+        self.rect = self.image.get_rect()
+        self.rect.x = x_cor
+        self.rect.y = y_cor
+        self.speed = speed
     def update(self):
         keys_pressed = key.get_pressed()
-        if keys_pressed[K_a] and self.rect.x >= 10:
+        if keys_pressed[K_w] and self.rect.y >= 10:
             self.rect.x -= self.speed
-        if keys_pressed[K_d] and self.rect.x <= 640:
+        if keys_pressed[K_s] and self.rect.x <= 440:
             self.rect.x += self.speed
+    def draw_racket(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
 
 game = True
+
+racket_1 = Player(100, 20, 0, 250, 0, 0, 100, 3)
 
 font.init()
 font1 = font.Font(None, 30)
@@ -53,8 +68,13 @@ while game:
             game = False
     if finish != True:
 
+        racket_1.draw_racket()
+        racket_1.update()
+
+        '''
         window.blit(shot, (1, 30))
         window.blit(missed, (1, 60))
+        '''
 
         shot = font1.render('shot:' + str(numbah1), True, (255, 105, 0))
         missed = font1.render('missed: ' + str(numbah2), True, (255, 0, 140))
