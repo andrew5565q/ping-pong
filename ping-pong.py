@@ -31,17 +31,24 @@ class GameSprite(sprite.Sprite):
 
 
 class Player(GameSprite):
-    def update(self):
+    def update(self, number):
         keys_pressed = key.get_pressed()
-        if keys_pressed[K_w] and self.y >= 0:
-            self.y -= self.speed
-        if keys_pressed[K_s] and self.y <= 400:
-            self.y += self.speed
+        if number == 'one':
+            if keys_pressed[K_w] and self.y >= 0:
+                self.y -= self.speed
+            if keys_pressed[K_s] and self.y <= 350:
+                self.y += self.speed
+        if number == 'two':
+            if keys_pressed[K_UP] and self.y >= 0:
+                self.y -= self.speed
+            if keys_pressed[K_DOWN] and self.y <= 350:
+                self.y += self.speed
 
 
 game = True
 
-racket_1 = Player(100, 20, 0, 250, 200, 100, 100, 3)
+racket_1 = Player(150, 20, 5, 250, 200, 100, 100, 3)
+racket_2 = Player(150, 20, 675, 250, 200, 100, 100, 3)
 
 font.init()
 font1 = font.Font(None, 30)
@@ -61,8 +68,11 @@ while game:
         if e.type == QUIT:
             game = False
     if finish != True:
-        racket_1.update()
+        racket_1.update('one')
         racket_1.reset()
+
+        racket_2.update('two')
+        racket_2.reset()
         '''
         window.blit(shot, (1, 30))
         window.blit(missed, (1, 60))
