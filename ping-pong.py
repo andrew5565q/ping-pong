@@ -2,6 +2,7 @@ from pygame import *
 
 window = display.set_mode((700, 500))
 display.set_caption('space')
+background = transform.scale(image.load('galaxy.jpg'), (700, 500))
 
 clock = time.Clock()
 finish = False
@@ -12,44 +13,35 @@ numbah2 = 0
 
 
 class GameSprite(sprite.Sprite):
-    def init(self, player_image, player_x, player_y, player_speed):
-        #super().init()
-        self.image = transform.scale(image.load(player_image), (75, 75))
-        self.rect = self.image.get_rect()
-        self.rect.x = player_x
-        self.rect.y = player_y
-        self.speed = player_speed
-
-    def reset(self):
-        window.blit(self.image, (self.rect.x, self.rect.y))
-
-
-class Player(sprite.Sprite):
-    def init(self, height, width, x_cor, y_cor, color_1, color_2, color_3, speed):
-        #super().init()
+    def __init__(self, height, width, player_x, player_y, color_1, color_2, color_3, player_speed):
+        super().__init__()
         self.color_1 = color_1
         self.color_2 = color_2
         self.color_3 = color_3
         self.width = width
         self.height = height
+        self.x = player_x
+        self.y = player_y
+        self.speed = player_speed
         self.image = Surface((self.width, self.height))
         self.image.fill((color_1, color_2, color_3))
-        self.rect = self.image.get_rect()
-        self.rect.x = x_cor
-        self.rect.y = y_cor
-        self.speed = speed
+
+    def reset(self):
+        window.blit(self.image, (self.x, self.y))
+
+
+class Player(GameSprite):
     def update(self):
         keys_pressed = key.get_pressed()
-        if keys_pressed[K_w] and self.rect.y >= 10:
-            self.rect.x -= self.speed
-        if keys_pressed[K_s] and self.rect.x <= 440:
-            self.rect.x += self.speed
-    def draw_racket(self):
-        window.blit(self.image, (self.rect.x, self.rect.y))
+        if keys_pressed[K_w] and self.y >= 0:
+            self.y -= self.speed
+        if keys_pressed[K_s] and self.y <= 400:
+            self.y += self.speed
+
 
 game = True
 
-racket_1 = Player(100, 20, 0, 250, 0, 0, 100, 3)
+racket_1 = Player(100, 20, 0, 250, 200, 100, 100, 3)
 
 font.init()
 font1 = font.Font(None, 30)
@@ -62,15 +54,15 @@ again = font1.render('press e to play again', True, (255, 150, 40))
 win = font2.render('you win', True, (255, 175, 0))
 lose = font2.render('you lose', True, (255, 105, 40))
 
+
 while game:
+    window.blit(background, (0, 0))
     for e in event.get():
         if e.type == QUIT:
             game = False
     if finish != True:
-
-        racket_1.draw_racket()
         racket_1.update()
-
+        racket_1.reset()
         '''
         window.blit(shot, (1, 30))
         window.blit(missed, (1, 60))
